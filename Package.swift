@@ -17,6 +17,10 @@ let package = Package(
   targets: [
     .target(
       name: "gitdiff"
+    ),
+    .testTarget(
+      name: "gitdiffTests",
+      dependencies: ["gitdiff"]
     )
   ]
 )

@@ -15,19 +15,20 @@ class DiffParser {
   /// Parses git diff text into structured file objects.
   /// - Parameter diffText: Raw git diff output
   /// - Returns: Array of parsed diff files
-  static func parse(_ diffText: String) -> [DiffFile] {
+  static func parse(_ diffText: String) async throws -> [DiffFile] {
     let lines = diffText.components(separatedBy: .newlines)
     var files: [DiffFile] = []
     var currentFileLines: [String] = []
     var i = 0
     
     while i < lines.count {
+      try Task.checkCancellation()
       let line = lines[i]
       
       if line.hasPrefix("diff --git") {
         /// Process previous file if exists
         if !currentFileLines.isEmpty {
-          if let file = parseFile(currentFileLines) {
+          if let file = try await parseFile(currentFileLines) {
             files.append(file)
           }
           currentFileLines = []
@@ -42,7 +43,7 @@ class DiffParser {
     
     /// Process last file
     if !currentFileLines.isEmpty {
-      if let file = parseFile(currentFileLines) {
+      if let file = try await parseFile(currentFileLines) {
         files.append(file)
       }
     }
@@ -53,7 +54,7 @@ class DiffParser {
   /// Parses a single file's diff lines.
   /// - Parameter lines: Lines belonging to a single file diff
   /// - Returns: Parsed file object or nil if invalid
-  private static func parseFile(_ lines: [String]) -> DiffFile? {
+  private static func parseFile(_ lines: [String]) async throws -> DiffFile? {
     guard !lines.isEmpty else { return nil }
     
     var oldPath = ""
@@ -65,6 +66,7 @@ class DiffParser {
     
     /// Parse file header
     while i < lines.count {
+      try Task.checkCancellation()
       let line = lines[i]
       
       if line.hasPrefix("diff --git") {
