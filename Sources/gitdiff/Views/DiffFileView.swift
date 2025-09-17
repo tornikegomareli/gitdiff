@@ -55,7 +55,7 @@ struct DiffFileView: View {
               .frame(maxWidth: .infinity, alignment: .leading)
               .background(configuration.theme.headerBackground)
 
-            VStack(spacing: configuration.lineSpacing.value) {
+            LazyVStack(spacing: configuration.lineSpacing.value) {
               ForEach(hunk.lines) { line in
                 DiffLineView(line: line)
               }
