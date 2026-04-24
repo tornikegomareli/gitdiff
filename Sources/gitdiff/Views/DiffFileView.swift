@@ -15,29 +15,31 @@ struct DiffFileView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 0) {
-      HStack {
-        Image(systemName: "doc.text")
-          .foregroundColor(configuration.theme.fileHeaderText)
+      if configuration.showFileHeaders {
+        HStack {
+          Image(systemName: "doc.text")
+            .foregroundColor(configuration.theme.fileHeaderText)
 
-        Text(file.displayName)
-          .font(.system(.headline, design: configuration.fontFamily))
-          .fontWeight(.bold)
-          .foregroundColor(configuration.theme.fileHeaderText)
+          Text(file.displayName)
+            .font(.system(.headline, design: configuration.fontFamily))
+            .fontWeight(.bold)
+            .foregroundColor(configuration.theme.fileHeaderText)
 
-        Spacer()
+          Spacer()
 
-        if file.isBinary {
-          Text("Binary file")
-            .font(.caption)
-            .foregroundColor(.secondary)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .background(Color.secondary.opacity(0.2))
-            .cornerRadius(4)
+          if file.isBinary {
+            Text("Binary file")
+              .font(.caption)
+              .foregroundColor(.secondary)
+              .padding(.horizontal, 8)
+              .padding(.vertical, 2)
+              .background(Color.secondary.opacity(0.2))
+              .cornerRadius(4)
+          }
         }
+        .padding()
+        .background(configuration.theme.fileHeaderBackground)
       }
-      .padding()
-      .background(configuration.theme.fileHeaderBackground)
 
       if file.isBinary {
         Text("Binary file not shown")

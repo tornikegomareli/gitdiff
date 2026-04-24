@@ -210,6 +210,7 @@ struct ExampleDetailView: View {
   @Environment(\.dismiss) var dismiss
   @State private var selectedTheme: DiffTheme = .light
   @State private var showLineNumbers = true
+  @State private var showFileHeaders = true
   
   var body: some View {
     NavigationView {
@@ -240,6 +241,7 @@ struct ExampleDetailView: View {
         // Controls
         HStack {
           Toggle("Line Numbers", isOn: $showLineNumbers)
+          Toggle("File Headers", isOn: $showFileHeaders)
           Spacer()
           Button(action: shareExample) {
             Image(systemName: "square.and.arrow.up")
@@ -253,6 +255,7 @@ struct ExampleDetailView: View {
           DiffRenderer(diffText: example.diffContent)
             .diffTheme(selectedTheme)
             .diffLineNumbers(showLineNumbers)
+            .diffFileHeaders(showFileHeaders)
             .padding()
         }
       }

@@ -10,6 +10,7 @@ import gitdiff
 
 struct CustomizationPlayground: View {
   @State private var showLineNumbers = true
+  @State private var showFileHeaders = true
   @State private var fontSize: CGFloat = 13
   @State private var lineSpacing: DiffConfiguration.LineSpacing = .compact
   @State private var wordWrap = true
@@ -29,6 +30,7 @@ struct CustomizationPlayground: View {
           DiffRenderer(diffText: SampleDiffs.configPlaygroundDiff)
             .diffTheme(selectedTheme)
             .diffLineNumbers(showLineNumbers)
+            .diffFileHeaders(showFileHeaders)
             .diffFont(size: fontSize, weight: fontWeight)
             .diffLineSpacing(lineSpacing)
             .diffWordWrap(wordWrap)
@@ -43,6 +45,7 @@ struct CustomizationPlayground: View {
             fontSize: fontSize,
             fontWeight: fontWeight,
             lineNumbers: showLineNumbers,
+            fileHeaders: showFileHeaders,
             wordWrap: wordWrap,
             lineSpacing: lineSpacing
           )
@@ -61,6 +64,7 @@ struct CustomizationPlayground: View {
       .sheet(isPresented: $showCustomizationSheet) {
         CustomizationSheet(
           showLineNumbers: $showLineNumbers,
+          showFileHeaders: $showFileHeaders,
           fontSize: $fontSize,
           lineSpacing: $lineSpacing,
           wordWrap: $wordWrap,
@@ -83,6 +87,7 @@ struct CustomizationPlayground: View {
 
 struct CustomizationSheet: View {
   @Binding var showLineNumbers: Bool
+  @Binding var showFileHeaders: Bool
   @Binding var fontSize: CGFloat
   @Binding var lineSpacing: DiffConfiguration.LineSpacing
   @Binding var wordWrap: Bool
@@ -147,7 +152,9 @@ struct CustomizationSheet: View {
               .font(.headline)
             
             Toggle("Show Line Numbers", isOn: $showLineNumbers)
-            
+
+            Toggle("Show File Headers", isOn: $showFileHeaders)
+
             Toggle("Word Wrap", isOn: $wordWrap)
             
             VStack(alignment: .leading, spacing: 8) {
@@ -224,6 +231,7 @@ struct CustomizationSheet: View {
     withAnimation {
       selectedTheme = config.theme
       showLineNumbers = config.showLineNumbers
+      showFileHeaders = config.showFileHeaders
       fontSize = config.fontSize
       fontWeight = config.fontWeight
       lineSpacing = config.lineSpacing
@@ -234,6 +242,7 @@ struct CustomizationSheet: View {
   private func resetToDefaults() {
     withAnimation {
       showLineNumbers = true
+      showFileHeaders = true
       fontSize = 13
       lineSpacing = .compact
       wordWrap = true
@@ -271,6 +280,7 @@ struct ConfigurationSummary: View {
   let fontSize: CGFloat
   let fontWeight: Font.Weight
   let lineNumbers: Bool
+  let fileHeaders: Bool
   let wordWrap: Bool
   let lineSpacing: DiffConfiguration.LineSpacing
   
@@ -284,6 +294,7 @@ struct ConfigurationSummary: View {
         ConfigItem(label: "Font Size", value: "\(Int(fontSize))pt")
         ConfigItem(label: "Font Weight", value: fontWeightName)
         ConfigItem(label: "Line Numbers", value: lineNumbers ? "On" : "Off")
+        ConfigItem(label: "File Headers", value: fileHeaders ? "On" : "Off")
         ConfigItem(label: "Word Wrap", value: wordWrap ? "On" : "Off")
         ConfigItem(label: "Line Spacing", value: lineSpacingName)
       }
