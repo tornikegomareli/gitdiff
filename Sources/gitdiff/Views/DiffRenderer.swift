@@ -40,7 +40,6 @@ public struct DiffRenderer: View {
             .font(.caption)
             .foregroundColor(.secondary)
         }
-        .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
       } else if let files = parsedFiles, files.isEmpty {
         VStack(spacing: 20) {
@@ -58,7 +57,6 @@ public struct DiffRenderer: View {
             .multilineTextAlignment(.center)
             .padding(.horizontal)
         }
-        .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
       } else if let files = parsedFiles {
         VStack(spacing: 16) {
@@ -66,10 +64,8 @@ public struct DiffRenderer: View {
             DiffFileView(file: file)
           }
         }
-        .padding()
       }
     }
-    .background(Color.appBackground)
     .task(id: diffText) {
       self.parsedFiles = try? await DiffParser.parse(diffText)
     }
