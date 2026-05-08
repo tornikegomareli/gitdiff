@@ -66,6 +66,22 @@ public extension DiffConfiguration {
         )
     }
     
+    /// Creates a new configuration with file headers toggled
+    func withFileHeaders(_ show: Bool) -> DiffConfiguration {
+        DiffConfiguration(
+            theme: theme,
+            showLineNumbers: showLineNumbers,
+            showFileHeaders: show,
+            fontFamily: fontFamily,
+            fontSize: fontSize,
+            fontWeight: fontWeight,
+            lineHeight: lineHeight,
+            lineSpacing: lineSpacing,
+            wordWrap: wordWrap,
+            contentPadding: contentPadding
+        )
+    }
+
     /// Creates a new configuration with word wrap toggled
     func withWordWrap(_ wrap: Bool) -> DiffConfiguration {
         DiffConfiguration(

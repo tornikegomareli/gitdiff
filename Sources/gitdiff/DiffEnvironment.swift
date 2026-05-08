@@ -60,7 +60,26 @@ public extension View {
             )
         }
     }
-    
+
+    /// Shows or hides file headers.
+    /// - Parameter show: Whether to show file headers
+    func diffFileHeaders(_ show: Bool) -> some View {
+        transformEnvironment(\.diffConfiguration) { config in
+            config = DiffConfiguration(
+                theme: config.theme,
+                showLineNumbers: config.showLineNumbers,
+                showFileHeaders: show,
+                fontFamily: config.fontFamily,
+                fontSize: config.fontSize,
+                fontWeight: config.fontWeight,
+                lineHeight: config.lineHeight,
+                lineSpacing: config.lineSpacing,
+                wordWrap: config.wordWrap,
+                contentPadding: config.contentPadding
+            )
+        }
+    }
+
     /// Configures font properties.
     /// - Parameters:
     ///   - size: Font size

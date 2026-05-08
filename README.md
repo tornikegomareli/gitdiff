@@ -121,6 +121,7 @@ For reusable configurations:
 let codeReviewConfig = DiffConfiguration(
     theme: .light,
     showLineNumbers: true,
+    showFileHeaders: true,
     fontSize: 13,
     fontWeight: .regular,
     lineSpacing: .comfortable,
@@ -201,6 +202,7 @@ struct PullRequestView: View {
 
 - `.diffTheme(_ theme: DiffTheme)` - Apply a color theme
 - `.diffLineNumbers(_ show: Bool)` - Toggle line numbers
+- `.diffFileHeaders(_ show: Bool)` - Toggle file headers
 - `.diffFont(size: CGFloat?, weight: Font.Weight?, design: Font.Design?)` - Configure font
 - `.diffLineSpacing(_ spacing: LineSpacing)` - Set line spacing
 - `.diffWordWrap(_ wrap: Bool)` - Enable word wrapping
