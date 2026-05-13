@@ -201,13 +201,33 @@ struct PullRequestView: View {
 ### View Modifiers
 
 - `.diffTheme(_ theme: DiffTheme)` - Apply a color theme
-- `.diffLineNumbers(_ show: Bool)` - Toggle line numbers
-- `.diffFileHeaders(_ show: Bool)` - Toggle file headers
+- `.diffLineNumbers(_ show: Bool)` - Toggle line numbers (legacy; prefer `.diffLineNumberStyle(_:)`)
+- `.diffLineNumberStyle(_ style: LineNumberStyle)` - Gutter style: `.hidden`, `.single` (mobile-friendly compact column), `.dual` (desktop old/new)
+- `.diffFileHeaders(_ show: Bool)` - Toggle file headers (the `diff --git` / `---` / `+++` block)
+- `.diffHunkHeaders(_ show: Bool)` - Toggle the per-hunk `@@ -a,b +c,d @@` separator
 - `.diffFont(size: CGFloat?, weight: Font.Weight?, design: Font.Design?)` - Configure font
 - `.diffLineSpacing(_ spacing: LineSpacing)` - Set line spacing
 - `.diffWordWrap(_ wrap: Bool)` - Enable word wrapping
 - `.diffConfiguration(_ config: DiffConfiguration)` - Apply complete configuration
 - `.diffParser(_ parser: any DiffParsing)` - Plug in a custom parser (see below)
+
+### Mobile-friendly defaults
+
+For phones and other narrow viewports the `.dual` gutter is cramped and the `@@` hunk header is rarely useful. A typical mobile renderer looks like:
+
+```swift
+DiffRenderer(diffText: text)
+    .diffLineNumberStyle(.single)   // one column, new# for + / old# for -
+    .diffHunkHeaders(false)         // hide @@ -a,b +c,d @@
+    .diffTheme(.dark)
+```
+
+There's also a `.mobile` preset that bundles these:
+
+```swift
+DiffRenderer(diffText: text)
+    .diffConfiguration(.mobile)
+```
 
 ## Custom Diff Formats
 
