@@ -207,6 +207,46 @@ struct PullRequestView: View {
 - `.diffLineSpacing(_ spacing: LineSpacing)` - Set line spacing
 - `.diffWordWrap(_ wrap: Bool)` - Enable word wrapping
 - `.diffConfiguration(_ config: DiffConfiguration)` - Apply complete configuration
+- `.diffParser(_ parser: any DiffParsing)` - Plug in a custom parser (see below)
+
+## Custom Diff Formats
+
+`DiffRenderer` accepts unified-diff text by default. To consume any other format — annotated diffs, server-side payloads, JSON patches, language-server output — implement `DiffParsing` and inject it via the `.diffParser(_:)` modifier:
+
+```swift
+import gitdiff
+
+struct MyAnnotatedDiffParser: DiffParsing {
+    let filePath: String
+
+    func parse(_ diffText: String) async throws -> [DiffFile] {
+        // Map your custom format → [DiffFile] using the public initializers
+        // on DiffFile / DiffHunk / DiffLine. The renderer doesn't care how
+        // you produced the model.
+        [
+            DiffFile(
+                oldPath: filePath,
+                newPath: filePath,
+                hunks: [
+                    DiffHunk(
+                        oldStart: 1, oldCount: 1, newStart: 1, newCount: 1,
+                        header: "",
+                        lines: [
+                            DiffLine(type: .removed, content: "old", oldLineNumber: 1, newLineNumber: nil),
+                            DiffLine(type: .added, content: "new", oldLineNumber: nil, newLineNumber: 1),
+                        ]
+                    )
+                ]
+            )
+        ]
+    }
+}
+
+// Inject — default stays `UnifiedDiffParser` if no override.
+DiffRenderer(diffText: myRawText)
+    .diffParser(MyAnnotatedDiffParser(filePath: "foo.swift"))
+    .diffTheme(.dark)
+```
 
 ## Example App
 

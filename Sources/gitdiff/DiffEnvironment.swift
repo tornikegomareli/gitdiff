@@ -5,11 +5,22 @@ struct DiffConfigurationKey: EnvironmentKey {
     static let defaultValue = DiffConfiguration.default
 }
 
+/// Environment key for the active diff parser. Defaults to
+/// ``UnifiedDiffParser`` so existing callers see no change.
+struct DiffParserKey: EnvironmentKey {
+    static let defaultValue: any DiffParsing = UnifiedDiffParser()
+}
+
 /// Environment extensions for diff configuration
 extension EnvironmentValues {
     public var diffConfiguration: DiffConfiguration {
         get { self[DiffConfigurationKey.self] }
         set { self[DiffConfigurationKey.self] = newValue }
+    }
+
+    public var diffParser: any DiffParsing {
+        get { self[DiffParserKey.self] }
+        set { self[DiffParserKey.self] = newValue }
     }
 }
 
@@ -140,6 +151,16 @@ public extension View {
         }
     }
     
+    /// Injects a custom ``DiffParsing`` implementation so the renderer can
+    /// consume formats other than standard unified diff (annotated diffs,
+    /// server-side payloads, JSON patches, …). The default parser is
+    /// ``UnifiedDiffParser``.
+    ///
+    /// - Parameter parser: Any value conforming to ``DiffParsing``.
+    func diffParser(_ parser: any DiffParsing) -> some View {
+        environment(\.diffParser, parser)
+    }
+
     /// Sets content padding
     func diffPadding(_ padding: EdgeInsets) -> some View {
         transformEnvironment(\.diffConfiguration) { config in
