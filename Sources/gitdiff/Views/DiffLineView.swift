@@ -50,9 +50,35 @@ struct DiffLineView: View {
     }
   }
 
+  /// For ``DiffConfiguration/LineNumberStyle/single``, show the most
+  /// relevant number for the line type: new for added/context, old for
+  /// removed. This matches how terminal tools like `git diff --color` and
+  /// Pi's own renderer present a compact gutter, where each line has at
+  /// most one number and the prefix carries the kind.
+  private var singleColumnLineNumber: String {
+    switch line.type {
+    case .added, .context, .header:
+      return line.newLineNumber.map(String.init)
+        ?? line.oldLineNumber.map(String.init)
+        ?? ""
+    case .removed:
+      return line.oldLineNumber.map(String.init) ?? ""
+    }
+  }
+
   var body: some View {
     HStack(spacing: 0) {
-      if configuration.showLineNumbers {
+      switch configuration.lineNumberStyle {
+      case .hidden:
+        EmptyView()
+      case .single:
+        Text(singleColumnLineNumber)
+          .font(.system(size: configuration.fontSize * 0.85, design: configuration.fontFamily))
+          .foregroundColor(configuration.theme.lineNumberText)
+          .frame(width: 32, alignment: .trailing)
+          .padding(.horizontal, 4)
+          .background(configuration.theme.lineNumberBackground)
+      case .dual:
         Text(line.oldLineNumber.map(String.init) ?? "")
           .font(.system(size: configuration.fontSize * 0.85, design: configuration.fontFamily))
           .foregroundColor(configuration.theme.lineNumberText)

@@ -49,13 +49,15 @@ struct DiffFileView: View {
       } else {
         ForEach(file.hunks) { hunk in
           VStack(alignment: .leading, spacing: 0) {
-            Text(hunk.header)
-              .font(.system(.caption, design: configuration.fontFamily))
-              .foregroundColor(configuration.theme.headerText)
-              .padding(.horizontal)
-              .padding(.vertical, 4)
-              .frame(maxWidth: .infinity, alignment: .leading)
-              .background(configuration.theme.headerBackground)
+            if configuration.showHunkHeaders {
+              Text(hunk.header)
+                .font(.system(.caption, design: configuration.fontFamily))
+                .foregroundColor(configuration.theme.headerText)
+                .padding(.horizontal)
+                .padding(.vertical, 4)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(configuration.theme.headerBackground)
+            }
 
             LazyVStack(spacing: configuration.lineSpacing.value) {
               ForEach(hunk.lines) { line in

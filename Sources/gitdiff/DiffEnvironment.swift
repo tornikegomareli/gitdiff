@@ -38,56 +38,44 @@ public extension View {
     /// - Parameter theme: The theme to apply
     func diffTheme(_ theme: DiffTheme) -> some View {
         transformEnvironment(\.diffConfiguration) { config in
-            config = DiffConfiguration(
-                theme: theme,
-                showLineNumbers: config.showLineNumbers,
-                showFileHeaders: config.showFileHeaders,
-                fontFamily: config.fontFamily,
-                fontSize: config.fontSize,
-                fontWeight: config.fontWeight,
-                lineHeight: config.lineHeight,
-                lineSpacing: config.lineSpacing,
-                wordWrap: config.wordWrap,
-                contentPadding: config.contentPadding
-            )
+            config = config.with(theme: theme)
         }
     }
     
-    /// Shows or hides line numbers.
-    /// - Parameter show: Whether to show line numbers
+    /// Shows or hides line numbers (legacy API — for finer control prefer
+    /// ``diffLineNumberStyle(_:)``). Maps `true` → ``DiffConfiguration/LineNumberStyle/dual``,
+    /// `false` → ``DiffConfiguration/LineNumberStyle/hidden``.
     func diffLineNumbers(_ show: Bool) -> some View {
         transformEnvironment(\.diffConfiguration) { config in
-            config = DiffConfiguration(
-                theme: config.theme,
-                showLineNumbers: show,
-                showFileHeaders: config.showFileHeaders,
-                fontFamily: config.fontFamily,
-                fontSize: config.fontSize,
-                fontWeight: config.fontWeight,
-                lineHeight: config.lineHeight,
-                lineSpacing: config.lineSpacing,
-                wordWrap: config.wordWrap,
-                contentPadding: config.contentPadding
-            )
+            config = config.withLineNumbers(show)
         }
     }
 
-    /// Shows or hides file headers.
-    /// - Parameter show: Whether to show file headers
+    /// Selects how the line-number gutter is rendered:
+    /// `.hidden` (no gutter), `.single` (compact single column — ideal for
+    /// mobile / narrow viewports), or `.dual` (side-by-side old/new
+    /// columns — the desktop default).
+    func diffLineNumberStyle(_ style: DiffConfiguration.LineNumberStyle) -> some View {
+        transformEnvironment(\.diffConfiguration) { config in
+            config = config.withLineNumberStyle(style)
+        }
+    }
+
+    /// Shows or hides file headers (the `diff --git` / `---` / `+++` header
+    /// block at the top of each file).
     func diffFileHeaders(_ show: Bool) -> some View {
         transformEnvironment(\.diffConfiguration) { config in
-            config = DiffConfiguration(
-                theme: config.theme,
-                showLineNumbers: config.showLineNumbers,
-                showFileHeaders: show,
-                fontFamily: config.fontFamily,
-                fontSize: config.fontSize,
-                fontWeight: config.fontWeight,
-                lineHeight: config.lineHeight,
-                lineSpacing: config.lineSpacing,
-                wordWrap: config.wordWrap,
-                contentPadding: config.contentPadding
-            )
+            config = config.withFileHeaders(show)
+        }
+    }
+
+    /// Shows or hides per-hunk `@@ -a,b +c,d @@` separator lines. Hide
+    /// these in minimal renderers where hunk boundaries are already
+    /// implied by line backgrounds — the prose around the diff (a chip
+    /// showing filename + stats, a sheet title, etc.) carries the location.
+    func diffHunkHeaders(_ show: Bool) -> some View {
+        transformEnvironment(\.diffConfiguration) { config in
+            config = config.withHunkHeaders(show)
         }
     }
 
@@ -98,18 +86,7 @@ public extension View {
     ///   - design: Font design (e.g., monospaced)
     func diffFont(size: CGFloat? = nil, weight: Font.Weight? = nil, design: Font.Design? = nil) -> some View {
         transformEnvironment(\.diffConfiguration) { config in
-            config = DiffConfiguration(
-                theme: config.theme,
-                showLineNumbers: config.showLineNumbers,
-                showFileHeaders: config.showFileHeaders,
-                fontFamily: design ?? config.fontFamily,
-                fontSize: size ?? config.fontSize,
-                fontWeight: weight ?? config.fontWeight,
-                lineHeight: config.lineHeight,
-                lineSpacing: config.lineSpacing,
-                wordWrap: config.wordWrap,
-                contentPadding: config.contentPadding
-            )
+            config = config.withFont(size: size, weight: weight, design: design)
         }
     }
     
@@ -117,37 +94,15 @@ public extension View {
     /// - Parameter spacing: The spacing mode
     func diffLineSpacing(_ spacing: DiffConfiguration.LineSpacing) -> some View {
         transformEnvironment(\.diffConfiguration) { config in
-            config = DiffConfiguration(
-                theme: config.theme,
-                showLineNumbers: config.showLineNumbers,
-                showFileHeaders: config.showFileHeaders,
-                fontFamily: config.fontFamily,
-                fontSize: config.fontSize,
-                fontWeight: config.fontWeight,
-                lineHeight: config.lineHeight,
-                lineSpacing: spacing,
-                wordWrap: config.wordWrap,
-                contentPadding: config.contentPadding
-            )
+            config = config.withLineSpacing(spacing)
         }
     }
-    
+
     /// Enables or disables word wrapping.
     /// - Parameter wrap: Whether to wrap long lines
     func diffWordWrap(_ wrap: Bool) -> some View {
         transformEnvironment(\.diffConfiguration) { config in
-            config = DiffConfiguration(
-                theme: config.theme,
-                showLineNumbers: config.showLineNumbers,
-                showFileHeaders: config.showFileHeaders,
-                fontFamily: config.fontFamily,
-                fontSize: config.fontSize,
-                fontWeight: config.fontWeight,
-                lineHeight: config.lineHeight,
-                lineSpacing: config.lineSpacing,
-                wordWrap: wrap,
-                contentPadding: config.contentPadding
-            )
+            config = config.withWordWrap(wrap)
         }
     }
     
@@ -167,7 +122,9 @@ public extension View {
             config = DiffConfiguration(
                 theme: config.theme,
                 showLineNumbers: config.showLineNumbers,
+                lineNumberStyle: config.lineNumberStyle,
                 showFileHeaders: config.showFileHeaders,
+                showHunkHeaders: config.showHunkHeaders,
                 fontFamily: config.fontFamily,
                 fontSize: config.fontSize,
                 fontWeight: config.fontWeight,
