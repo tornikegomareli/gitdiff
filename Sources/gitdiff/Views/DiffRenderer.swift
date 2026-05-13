@@ -20,11 +20,12 @@ import SwiftUI
 /// ```
 public struct DiffRenderer: View {
   let diffText: String
-  
+
   @Environment(\.diffConfiguration) private var configuration
-  
+  @Environment(\.diffParser) private var parser
+
   @State private var parsedFiles: [DiffFile]? = nil
-  
+
   public init(diffText: String) {
     self.diffText = diffText
   }
@@ -67,7 +68,7 @@ public struct DiffRenderer: View {
       }
     }
     .task(id: diffText) {
-      self.parsedFiles = try? await DiffParser.parse(diffText)
+      self.parsedFiles = try? await parser.parse(diffText)
     }
   }
 }

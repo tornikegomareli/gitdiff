@@ -9,12 +9,30 @@
 import Foundation
 
 /// Represents a change section (hunk) in a diff file.
-struct DiffHunk: Identifiable {
-  let id = UUID()
-  let oldStart: Int
-  let oldCount: Int
-  let newStart: Int
-  let newCount: Int
-  let header: String
-  let lines: [DiffLine]
+public struct DiffHunk: Identifiable, Sendable {
+  public let id: UUID
+  public let oldStart: Int
+  public let oldCount: Int
+  public let newStart: Int
+  public let newCount: Int
+  public let header: String
+  public let lines: [DiffLine]
+
+  public init(
+    id: UUID = UUID(),
+    oldStart: Int,
+    oldCount: Int,
+    newStart: Int,
+    newCount: Int,
+    header: String,
+    lines: [DiffLine]
+  ) {
+    self.id = id
+    self.oldStart = oldStart
+    self.oldCount = oldCount
+    self.newStart = newStart
+    self.newCount = newCount
+    self.header = header
+    self.lines = lines
+  }
 }
